@@ -113,6 +113,9 @@ void OsuRenderer::shutdown() {
 void OsuRenderer::begin(float window_width, float window_height) {
     update_playfield_transform(window_width, window_height);
 
+    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
