@@ -16,6 +16,8 @@ static constexpr float MISS_FADEOUT_DURATION = 200.0f;
 static constexpr float BORDER_THICKNESS_RATIO = 0.12f;
 // Approach circle ring thickness relative to circle radius
 static constexpr float APPROACH_RING_THICKNESS_RATIO = 0.08f;
+// How long judgement text stays on screen (ms)
+static constexpr float JUDGEMENT_DISPLAY_DURATION = 600.0f;
 // Spinner center position in osu pixels
 static constexpr glm::vec2 SPINNER_CENTER{256.0f, 192.0f};
 static constexpr float SPINNER_RADIUS = 150.0f;
@@ -450,6 +452,57 @@ void OsuGame::render_spinner(const HitObject& obj, int index,
 
 void OsuGame::render_imgui() {
     render_hud();
+    render_judgements();
+}
+
+void OsuGame::render_judgements() {
+    ImDrawList* draw_list = ImGui::GetForegroundDrawList();
+
+    for (int i = 0; i < static_cast<int>(beatmap_.hit_objects.size()); ++i) {
+        if (!object_hit_[i]) continue;
+
+        float since_hit = current_time_ - object_hit_time_[i];
+        if (since_hit < 0.0f || since_hit > JUDGEMENT_DISPLAY_DURATION) continue;
+
+        float t = since_hit / JUDGEMENT_DISPLAY_DURATION;
+        float alpha = std::max(0.0f, 1.0f - t);
+        float rise = t * 30.0f; // float upward
+
+        const auto& obj = beatmap_.hit_objects[i];
+        glm::vec2 screen_pos = renderer_.osu_to_screen(obj.position);
+        screen_pos.y -= rise;
+
+        const char* text = nullptr;
+        ImU32 color = 0;
+
+        switch (object_judgement_[i]) {
+        case HitResult::Judgement::Great300:
+            text = "300";
+            color = IM_COL32(100, 200, 255, static_cast<int>(alpha * 255));
+            break;
+        case HitResult::Judgement::Good100:
+            text = "100";
+            color = IM_COL32(100, 255, 100, static_cast<int>(alpha * 255));
+            break;
+        case HitResult::Judgement::Meh50:
+            text = "50";
+            color = IM_COL32(255, 200, 50, static_cast<int>(alpha * 255));
+            break;
+        case HitResult::Judgement::Miss:
+            text = "MISS";
+            color = IM_COL32(255, 50, 50, static_cast<int>(alpha * 255));
+            break;
+        }
+
+        if (text) {
+            ImVec2 text_size = ImGui::CalcTextSize(text);
+            ImVec2 pos(screen_pos.x - text_size.x * 0.5f,
+                       screen_pos.y - text_size.y * 0.5f);
+            // Scale text by 1.5x
+            float font_size = ImGui::GetFontSize() * 1.5f;
+            draw_list->AddText(ImGui::GetFont(), font_size, pos, color, text);
+        }
+    }
 }
 
 void OsuGame::render_hud() {

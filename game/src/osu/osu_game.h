@@ -54,6 +54,7 @@ private:
     void render_spinner(const HitObject& obj, int index,
                         float current_time_ms);
     void render_hud();
+    void render_judgements();
 
     HitResult::Judgement judge_hit(float time_error_ms) const;
     glm::vec4 get_combo_color(int index) const;
