@@ -77,7 +77,10 @@ void OsuLayer::on_render() {
 }
 
 void OsuLayer::on_imgui_render() {
-    // HUD is rendered inside osu_game's render()
+    if (!game_) {
+        return;
+    }
+    game_->render_imgui();
 }
 
 void OsuLayer::on_event(engine::Event& event) {

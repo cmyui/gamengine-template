@@ -35,6 +35,7 @@ public:
 
     void update(float current_time_ms, float window_width, float window_height);
     void render();
+    void render_imgui();
 
     void on_click(glm::vec2 screen_pos);
 

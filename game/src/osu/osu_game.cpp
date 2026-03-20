@@ -151,7 +151,6 @@ void OsuGame::render() {
         }
     }
 
-    render_hud();
     renderer_.end();
 }
 
@@ -447,6 +446,10 @@ void OsuGame::render_spinner(const HitObject& obj, int index,
     // Center dot
     renderer_.draw_filled_circle(SPINNER_CENTER, 8.0f,
                                  glm::vec4(1.0f), alpha);
+}
+
+void OsuGame::render_imgui() {
+    render_hud();
 }
 
 void OsuGame::render_hud() {
