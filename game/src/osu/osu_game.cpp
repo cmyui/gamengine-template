@@ -118,7 +118,7 @@ void OsuGame::render() {
         // Determine the end of this object's visibility window
         float obj_end_time = static_cast<float>(obj.time);
         if (obj.type == HitObjectType::Slider) {
-            obj_end_time += obj.slider_duration * obj.repeat_count;
+            obj_end_time += obj.slider_duration;
         } else if (obj.type == HitObjectType::Spinner) {
             obj_end_time = static_cast<float>(obj.end_time);
         }
@@ -333,7 +333,7 @@ void OsuGame::render_slider(const HitObject& obj, int index,
 
     glm::vec4 combo_color = get_combo_color(index);
 
-    float total_duration = obj.slider_duration * obj.repeat_count;
+    float total_duration = obj.slider_duration;
     float slider_end_time = static_cast<float>(obj.time) + total_duration;
 
     // Hit explosion after slider completes
@@ -496,7 +496,7 @@ glm::vec4 OsuGame::get_combo_color(int index) const {
 float OsuGame::slider_progress_at(const HitObject& obj,
                                    float time_ms) const {
     if (obj.slider_duration <= 0.0f) return 0.0f;
-    float total_duration = obj.slider_duration * obj.repeat_count;
+    float total_duration = obj.slider_duration;
     float elapsed = time_ms - static_cast<float>(obj.time);
     elapsed = std::clamp(elapsed, 0.0f, total_duration);
 

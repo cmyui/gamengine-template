@@ -6,7 +6,10 @@
 #include <memory>
 #include <string>
 
-namespace osu { class OsuGame; }
+namespace osu {
+class OsuGame;
+class GameplayClock;
+}
 
 class OsuLayer : public engine::Layer {
 public:
@@ -21,10 +24,9 @@ public:
 
 private:
     std::unique_ptr<osu::OsuGame> game_;
+    std::unique_ptr<osu::GameplayClock> clock_;
     std::string osz_path_;
     int difficulty_index_;
-    float elapsed_time_ms_ = 0.0f;
-    bool started_ = false;
 };
 
 class GameApplication : public engine::Application {
